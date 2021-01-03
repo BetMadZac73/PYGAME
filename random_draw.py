@@ -24,7 +24,7 @@ pygame.font.init()                                          # we are going to us
 class Brush():
     # Create the Brush Class, they are going to be little squares
     def __init__(self):
-        self.x = random.randint(WIDTH * 0.4//1, WIDTH * 0.6//1)     # we use // to make sure it is an Integer 
+        self.x = random.randint(WIDTH * 0.1//1, WIDTH * 0.9//1)     # we use // to make sure it is an Integer 
         self.y = random.randint(HEIGHT * 0.4//1, HEIGHT * 0.6//1)   # use // to get integer
         self.size = random.randint(1,6)                             # give a random size
         self.R = random.randint(30,255)                             # random colors
@@ -58,6 +58,7 @@ def main():
     key_cool = 0                    # the key hit happens too fast, so we use this to cool down after a key hit
     main_font = pygame.font.SysFont("comicsans", 20)    # Set a Font
     WIN = pygame.display.set_mode((pygame.display.get_window_size()),flags)
+    inf = True                      # display info ?
 
     
     for i in range(2500):           # We are going to create this many indiviudal brushes
@@ -65,12 +66,7 @@ def main():
         brushes.append(brush)       # add it to the array so we can iterate them all
     
     # We are going to tell them how to control this program
-    info = [f"Random v1.0 uses 2,500 brushes running at {FPS} FPS", "Press <esc> to exit", "Press <space> to toggle trails on/off", "Click Mouse to chase brushes"]
-    n = 0
-    for line in info:
-        n += 1
-        info_label = main_font.render(line,1,(255,255,255))
-        WIN.blit(info_label, (10 , n * 15))
+    info = [f"Random v1.0 uses 2,500 brushes running at {FPS} FPS", "Press <esc> to exit", "Press <space> to toggle trails on/off", "Click Mouse to chase brushes", "Press I to hide info"]
     
     def redraw_window():
         (WIDTH, HEIGHT) = pygame.display.get_window_size()      # check the size and use it when calling move
@@ -81,6 +77,15 @@ def main():
         for brush in brushes:
             brush.move(posx,posy,clicked, WIDTH, HEIGHT)
             brush.draw(WIN)
+        # display info
+        if inf:
+            n = 0
+            for line in info:
+                n += 1
+                info_label = main_font.render(line,1,(255,255,255))
+                WIN.blit(info_label, (10 , n * 15))
+
+
         # update that display
         pygame.display.update()
  
@@ -113,6 +118,9 @@ def main():
             if keys[pygame.K_SPACE] and key_cool == 0:  # Space Bar enables us to turn trails on and off
                 trails_on = not trails_on
                 key_cool = 3                # set the counter so we detect only one key press
+            if keys[pygame.K_i] and key_cool == 0:   # I key toggles the info
+                inf = not inf
+                key_cool = 3
             
             if key_cool > 0: key_cool -= 1  # decrement the cool down counter
        
