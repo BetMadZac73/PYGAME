@@ -14,17 +14,10 @@ Use SPACE key to turn the trails on and off - try it you will see.
 import pygame
 import random
 
-# this bit is going to try and get the screen size will work for Windows Machine
-# put it in a Try clause - hopefully will also work therefore on non-Windows
-try:
-    from win32api import GetSystemMetrics         # we want to get the screen size
-    HEIGHT = GetSystemMetrics(1) - 10
-    WIDTH = GetSystemMetrics(0)
-except:
-    HEIGHT = 750
-    WIDTH = 1500
-
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))              # create the window
+HEIGHT = 550                                                # Set arbitrary size
+WIDTH = 750                                                 # Set arbitrary size
+flags = pygame.RESIZABLE                                    # use this flage
+WIN = pygame.display.set_mode((WIDTH, HEIGHT),flags)        # create the surface
 pygame.display.set_caption("Doodle")                        # give it the tittle
 pygame.font.init()                                          # we are going to use some fonts
 
@@ -42,12 +35,12 @@ class Brush():
         # very simple draw method
         pygame.draw.rect(window, (self.R, self.G, self.B), (self.x, self.y, self.size, self.size))
     
-    def move(self, posx, posy, clicked):
+    def move(self, posx, posy, clicked, WIDTH, HEIGHT):
         # this moves the brush randomly
         self.x += random.randint(-12 + self.size, 12 - self.size)
         self.y += random.randint(-12 + self.size, 12 - self.size)
-        if self.x < -50 or self.x > WIDTH + 50: self.x = WIDTH/2
-        if self.y < -50 or self.y > HEIGHT + 50: self.y = HEIGHT/2
+        if self.x < -50 or self.x > WIDTH + 50: self.x = WIDTH//2
+        if self.y < -50 or self.y > HEIGHT + 50: self.y = HEIGHT//2
         if clicked:
             # If the mouse was clicked the we are going to chase the brushes away from the cursor position
             if self.x < posx - 50: self.x += -1
@@ -64,6 +57,8 @@ def main():
     trails_on = True                # this enables us to toggle whether trails are kept or cleared
     key_cool = 0                    # the key hit happens too fast, so we use this to cool down after a key hit
     main_font = pygame.font.SysFont("comicsans", 20)    # Set a Font
+    WIN = pygame.display.set_mode((pygame.display.get_window_size()),flags)
+
     
     for i in range(2500):           # We are going to create this many indiviudal brushes
         brush = Brush()             # create the brush
@@ -78,12 +73,13 @@ def main():
         WIN.blit(info_label, (10 , n * 15))
     
     def redraw_window():
+        (WIDTH, HEIGHT) = pygame.display.get_window_size()      # check the size and use it when calling move
         # when it's not trails then fill the background with a blank black rectangle
         if not trails_on:
             pygame.draw.rect(WIN, (0,0,0), (0,0, WIDTH, HEIGHT)) 
         # iterate through all the brushes, move them, and then draw them n
         for brush in brushes:
-            brush.move(posx,posy,clicked)
+            brush.move(posx,posy,clicked, WIDTH, HEIGHT)
             brush.draw(WIN)
         # update that display
         pygame.display.update()
@@ -101,6 +97,11 @@ def main():
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN: # We are looking for a mouse click on or off
                 clicked = not clicked       # switch the value True or False
+
+            if event.type == pygame.WINDOWEVENT:  # We are looking for screen resizing
+                if event.event == 5 :       # which appears as event 5
+                    # recreate the surface to be th enew size
+                    WIN = pygame.display.set_mode((pygame.display.get_window_size()),flags)  
 
             keys = pygame.key.get_pressed() # check key presses
             if keys[pygame.K_ESCAPE]:       # it's nice to be able to exit
