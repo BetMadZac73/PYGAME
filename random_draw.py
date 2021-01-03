@@ -18,7 +18,7 @@ import random
 # put it in a Try clause - hopefully will also work therefore on non-Windows
 try:
     from win32api import GetSystemMetrics         # we want to get the screen size
-    HEIGHT = GetSystemMetrics(1)
+    HEIGHT = GetSystemMetrics(1) - 10
     WIDTH = GetSystemMetrics(0)
 except:
     HEIGHT = 750
