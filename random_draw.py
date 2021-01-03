@@ -39,8 +39,8 @@ class Brush():
         # this moves the brush randomly
         self.x += random.randint(-12 + self.size, 12 - self.size)
         self.y += random.randint(-12 + self.size, 12 - self.size)
-        if self.x < -50 or self.x > WIDTH + 50: self.x = WIDTH//2
-        if self.y < -50 or self.y > HEIGHT + 50: self.y = HEIGHT//2
+        if self.x < -50 or self.x > WIDTH + 150: self.x = WIDTH//2
+        if self.y < -50 or self.y > HEIGHT + 150: self.y = HEIGHT//2
         if clicked:
             # If the mouse was clicked the we are going to chase the brushes away from the cursor position
             if self.x < posx - 50: self.x += -1
@@ -83,6 +83,7 @@ def main():
             for line in info:
                 n += 1
                 info_label = main_font.render(line,1,(255,255,255))
+                pygame.draw.rect(WIN, (0,0,0), (10, n * 15, info_label.get_width(), info_label.get_height() ))
                 WIN.blit(info_label, (10 , n * 15))
 
 
