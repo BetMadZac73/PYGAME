@@ -98,10 +98,13 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN: # We are looking for a mouse click on or off
                 clicked = not clicked       # switch the value True or False
 
-            if event.type == pygame.WINDOWEVENT:  # We are looking for screen resizing
-                if event.event == 5 :       # which appears as event 5
-                    # recreate the surface to be th enew size
-                    WIN = pygame.display.set_mode((pygame.display.get_window_size()),flags)  
+            try:
+                if event.type == pygame.WINDOWEVENT:  # We are looking for screen resizing
+                    if event.event == 5 :       # which appears as event 5
+                        # recreate the surface to be th enew size
+                        WIN = pygame.display.set_mode((pygame.display.get_window_size()),flags)  
+            except:
+                pass
 
             keys = pygame.key.get_pressed() # check key presses
             if keys[pygame.K_ESCAPE]:       # it's nice to be able to exit
